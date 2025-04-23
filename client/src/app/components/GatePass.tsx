@@ -1,6 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
 import { IGatePass } from "../models/printGatePassContainer";
 import Barcode from "react-barcode";
+import { locationHelper } from "../location/locationHelper";
 
 interface Props {
   invoice: IGatePass;
@@ -25,8 +26,8 @@ const GatePass: React.FC<Props> = (props: Props) => {
         mr: "auto",
         pageBreakInside: "avoid",
         breakInside: "avoid",
-        borderBottom: "2px dashed black",
-        "@media print": { mt: 0 , opacity: "100%"},
+        borderBottom: "1px dashed black",
+        "@media print": { mt: 0, opacity: "100%" },
       }}
       disableGutters
     >
@@ -56,13 +57,13 @@ const GatePass: React.FC<Props> = (props: Props) => {
             p: 0,
           }}
         >
-          <Typography sx={{ fontWeight: "bold", p: 0 }}>
+          <Typography sx={{ p: 0 }}>
             BASRA GATEWAY TERMINAL
           </Typography>
           <Typography sx={{ p: 0 }}>
             Berth 20/27, North Port, Umm Qasr Basra Province Iraq
           </Typography>
-          <Typography variant="h6" sx={{ fontWeight: "bold", p: 0 }}>
+          <Typography variant="h6" sx={{  p: 0 }}>
             www.ictsiiraq.com
           </Typography>
           <Typography variant="subtitle1">GATE PASS</Typography>
@@ -92,7 +93,8 @@ const GatePass: React.FC<Props> = (props: Props) => {
             margin: "auto",
           }}
         >
-          {invoice.containerNumber}
+          {invoice.containerNumber} -
+          {locationHelper(invoice.berth, invoice.containerYardLocation)}
         </Typography>
       </Box>
       <Box
@@ -186,7 +188,7 @@ const GatePass: React.FC<Props> = (props: Props) => {
               fontSize: "14px",
             }}
           >
-            Delivery Type
+            DO Validity
           </span>
           <span
             style={{
@@ -196,11 +198,33 @@ const GatePass: React.FC<Props> = (props: Props) => {
               fontSize: "14px",
             }}
           >
-            {invoice.deliveryType}
+            {invoice.deliveryOrderDate}
           </span>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+          <span
+            style={{
+              border: "1px solid black",
+              borderRight: "none",
+              borderBottom: "none",
+              width: "100%",
+              fontSize: "14px",
+            }}
+          >
+            Delivery Type
+          </span>
+          <span
+            style={{
+              border: "1px solid black",
+              borderRight: "none",
+              borderBottom: "none",
+              width: "100%",
+              fontSize: "14px",
+            }}
+          >
+            {invoice.deliveryType}
+          </span>
           <span
             style={{
               border: "1px solid black",
@@ -215,7 +239,6 @@ const GatePass: React.FC<Props> = (props: Props) => {
           <span
             style={{
               border: "1px solid black",
-              borderRight: "none",
               borderBottom: "none",
               width: "100%",
               fontSize: "14px",
@@ -223,6 +246,9 @@ const GatePass: React.FC<Props> = (props: Props) => {
           >
             {invoice.consignee.slice(0, 15)}
           </span>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
@@ -237,6 +263,7 @@ const GatePass: React.FC<Props> = (props: Props) => {
           <span
             style={{
               border: "1px solid black",
+              borderRight: "none",
               borderBottom: "none",
               width: "100%",
               fontSize: "14px",
@@ -244,9 +271,6 @@ const GatePass: React.FC<Props> = (props: Props) => {
           >
             {invoice.invoiceNumber}
           </span>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
@@ -261,7 +285,6 @@ const GatePass: React.FC<Props> = (props: Props) => {
           <span
             style={{
               border: "1px solid black",
-              borderRight: "none",
               borderBottom: "none",
               fontSize: "14px",
               width: "100%",
@@ -269,6 +292,9 @@ const GatePass: React.FC<Props> = (props: Props) => {
           >
             {invoice.grossWeight}
           </span>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
@@ -284,15 +310,13 @@ const GatePass: React.FC<Props> = (props: Props) => {
             style={{
               border: "1px solid black",
               fontSize: "14px",
+              borderRight: "none",
               borderBottom: "none",
               width: "100%",
             }}
           >
             {invoice.containerLength}
           </span>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
@@ -308,18 +332,19 @@ const GatePass: React.FC<Props> = (props: Props) => {
             style={{
               border: "1px solid black",
               fontSize: "14px",
-              borderRight: "none",
               borderBottom: "none",
               width: "100%",
             }}
           >
             {invoice.containerFreightStatus}
           </span>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
               borderRight: "none",
-              borderBottom: "none",
               fontSize: "14px",
               width: "100%",
             }}
@@ -330,15 +355,12 @@ const GatePass: React.FC<Props> = (props: Props) => {
             style={{
               border: "1px solid black",
               fontSize: "14px",
-              borderBottom: "none",
+              borderRight: "none",
               width: "100%",
             }}
           >
             {invoice.containerCategory}
           </span>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
@@ -353,17 +375,18 @@ const GatePass: React.FC<Props> = (props: Props) => {
             style={{
               border: "1px solid black",
               fontSize: "14px",
-              borderRight: "none",
               width: "100%",
             }}
           >
             {invoice.lineId.slice(0, 5)}
           </span>
+        </Box>
+        {/* <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
           <span
             style={{
               border: "1px solid black",
-              borderRight: "none",
               fontSize: "14px",
+              borderRight: "none",
               width: "100%",
             }}
           >
@@ -373,12 +396,32 @@ const GatePass: React.FC<Props> = (props: Props) => {
             style={{
               border: "1px solid black",
               fontSize: "14px",
+              borderRight: "none",
               width: "100%",
             }}
           >
             {invoice.containerIsoCode}
           </span>
-        </Box>
+          <span
+            style={{
+              border: "1px solid black",
+              borderRight: "none",
+              fontSize: "14px",
+              width: "100%",
+            }}
+          >
+            Berth
+          </span>
+          <span
+            style={{
+              border: "1px solid black",
+              fontSize: "14px",
+              width: "100%",
+            }}
+          >
+            {invoice.berth}
+          </span>
+        </Box> */}
       </Box>
       <Box
         sx={{

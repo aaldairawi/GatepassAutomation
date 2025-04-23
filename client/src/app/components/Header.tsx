@@ -63,7 +63,7 @@ const Header = () => {
           }}
         >
           <Typography variant="h5" sx={{ p: 0, m: 0 }}>
-            BGT Gate Pass V 1.5
+            BGT Gate Pass V 1.6
           </Typography>
         </Box>
         {loggedIn && (

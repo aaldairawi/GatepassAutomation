@@ -2,6 +2,7 @@ using API.Constants;
 using API.Dtos;
 using API.Queries;
 using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Server;
 
 namespace API.Services
 {
@@ -15,9 +16,10 @@ namespace API.Services
 
         public async Task<List<PrintGatePassContainerDto>> GetAllContainersToPrint(PrintGatePassDataDto data)
         {
-
             string customerContractNameResult = string.Empty;
             var query = SQL_Print_Invoice_Queries.GetInvoiceContainersToPrint();
+            
+            
             var result = await _database.ExecuteQueryAsync(DatabaseNames.BGTPortalN4, query, async reader =>
             {
                 List<PrintGatePassContainerDto> result = [];
@@ -34,7 +36,12 @@ namespace API.Services
                     var lineId = reader["LineId"].ToString() ?? "";
                     var isoCode = reader["ContainerIsoCode"].ToString() ?? "";
                     var containerTimeIn = reader["ContainerTimeIn"].ToString() ?? "";
+                    var containerYardLocation = reader["ContainerYardLocation"].ToString() ?? "";
+                    var berth = reader["Berth"].ToString() ?? "";
+                    var deliveryOrderDate = reader["DeliveryOrderDate"].ToString() ?? "";
+
                     var finalizedValidityDate = DetermineGatePassValidity(category, validityDate, containerTimeIn);
+                    var formattedDeliveryOrderDate = FormatDate(deliveryOrderDate);
 
                     if (!string.IsNullOrEmpty(data.CustomerContractGkey))
                     {
@@ -43,7 +50,8 @@ namespace API.Services
 
                     result.Add(new(containerNumber, DateTime.Now.ToString("yyyy-MM-dd"),
                         consignee, invoiceNumber, grossWeight, containerLength, freightKind,
-                        category, lineId, isoCode, finalizedValidityDate, customerContractNameResult));
+                        category, lineId, isoCode, finalizedValidityDate, 
+                        customerContractNameResult, containerYardLocation, berth, formattedDeliveryOrderDate));
 
                     for (int index = 0; index < result.Count; index++)
                     {
@@ -78,7 +86,12 @@ namespace API.Services
                 return Convert.ToDateTime(timeInDate).AddDays(6).ToString("yyyy-MM-dd");
             }
             return "None";
-
+        }
+        private static string FormatDate(string date)
+        {
+            bool stringIsParseableAsDate = DateTime.TryParse(date, out DateTime result);
+            if(stringIsParseableAsDate) return result.ToString("yyyy-MM-dd");
+            return "N/A";
         }
 
         public async Task<string> GetCustomerContractName(string gkey)
@@ -118,8 +131,11 @@ namespace API.Services
                     var lineId = reader["LineId"].ToString() ?? "";
                     var isoCode = reader["ContainerIsoCode"].ToString() ?? "";
                     var containerTimeIn = reader["ContainerTimeIn"].ToString() ?? "";
-
+                    var containerYardLocation = reader["ContainerYardLocation"].ToString() ?? "";
+                    var berth = reader["Berth"].ToString() ?? "";
                     var finalizedValidityDate = DetermineGatePassValidity(category, validityDate, containerTimeIn);
+                    var deliveryOrderDate = reader["DeliveryOrderDate"].ToString() ?? "";
+                    var formattedDeliveryOrderDate  = FormatDate(deliveryOrderDate);
 
                     if (!string.IsNullOrEmpty(data.CustomerContractGkey))
                     {
@@ -128,7 +144,8 @@ namespace API.Services
 
                     result.Add(new(containerNumber, DateTime.Now.ToString("yyyy-MM-dd"),
                         consignee, invoiceNumber, grossWeight, containerLength, freightKind,
-                    category, lineId, isoCode, finalizedValidityDate, customerContractNameResult));
+                    category, lineId, isoCode, finalizedValidityDate, customerContractNameResult, containerYardLocation, berth
+                    , formattedDeliveryOrderDate));
                 }
                 return result;
             }, new SqlParameter("@draftNumber", data.DraftNumber));

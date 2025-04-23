@@ -28,7 +28,7 @@ namespace API.Queries
 	            (SUBSTRING(billingnavis.dbo.bil_invoice_type.id, 1, 2) IN ('C1','C8', 'D1','D2'))
 	            ORDER BY Created DESC;";
         }
-        // 2024-09-26 
+         
         // 
         //            YEAR(DATEADD(day, -1, GETDATE()))  = YEAR(CONVERT(DATE,bil_invoices.created)) AND 
         //          MONTH(DATEADD(day, -1, GETDATE())) = MONTH(CONVERT(DATE, bil_invoices.created)) AND

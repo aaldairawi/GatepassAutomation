@@ -10,7 +10,7 @@ namespace API.Queries
                     bil_customer AS Consignee, draft_nbr AS InvoiceNumber , Grosswhigt AS GrossWeight,
                     UnitLength AS ContainerLength, freight_kind AS ContainerFreightStatus, 
                     TimeInOfUnit AS ContainerTimeIn,
-                    category AS ContainerCategory, LineOperator AS LineId, ISO_CODE AS ContainerIsoCode
+                    category AS ContainerCategory, LineOperator AS LineId, ISO_CODE AS ContainerIsoCode, ContainerYardLocation, Berth, DeliveryOrderDate
                     FROM gatePass_fullData
                     WHERE draft_nbr = @draftNumber AND ValidityDate IS NOT NULL AND ActiveHold IS NULL;";
         }

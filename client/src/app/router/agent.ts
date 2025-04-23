@@ -4,7 +4,7 @@ import { IPrintGatePassDataDto } from "../models/dailyFinalizedInvoice";
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 100));
 
-//  axios.defaults.baseURL = "http://localhost:5000/api/";
+// axios.defaults.baseURL = "http://localhost:5000/api/";
 
 axios.defaults.baseURL = "/api/";
 
